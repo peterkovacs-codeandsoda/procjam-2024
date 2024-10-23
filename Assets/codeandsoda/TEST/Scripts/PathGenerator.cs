@@ -17,7 +17,10 @@ public class PathGenerator : MonoBehaviour
     int curveResolution;
 
     [SerializeField]
-    int translationSpeed;
+    float morphingSpeed;
+
+    [SerializeField]
+    float morphingTime;
 
     [SerializeField]
     GameObject anchorPrefab;
@@ -31,6 +34,9 @@ public class PathGenerator : MonoBehaviour
     private List<Vector2> pathPoints;
     private int[] multipliers;
     private LineRenderer lineRenderer;
+    private bool morphing;
+    private float elapsedMorphingTime;
+    private float translation;
 
     void Start()
     {
@@ -45,19 +51,28 @@ public class PathGenerator : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
+        if (!morphing && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
         {
-            float translation = -translationSpeed * Time.deltaTime;
+            translation = -morphingSpeed * Time.deltaTime;
+            morphing = true;
+        }
+        if (!morphing && (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)))
+        {
+            translation = morphingSpeed * Time.deltaTime;
+            morphing = true;
+        }
+
+        if (morphing && elapsedMorphingTime < morphingTime)
+        {
+            elapsedMorphingTime += Time.deltaTime;
             TranslateControlPoints(new Vector2(translation, 0.0f));
             CreateBezierPath();
             VisualizePath();
         }
-        if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
+        else if(morphing && elapsedMorphingTime > morphingTime)
         {
-            float translation = translationSpeed * Time.deltaTime;
-            TranslateControlPoints(new Vector2(translation, 0.0f));
-            CreateBezierPath();
-            VisualizePath();
+            elapsedMorphingTime = 0.0f;
+            morphing = false;
         }
     }
 
@@ -89,11 +104,11 @@ public class PathGenerator : MonoBehaviour
         }
     }
 
-    void TranslateControlPoints(Vector2 direction)
+    void TranslateControlPoints(Vector2 translation)
     {
         for (int i = 0; i < controlPoints.Count - 1; i += 2)
         {
-            controlPoints[i] = controlPoints[i] + multipliers[i / 2] * direction;
+            controlPoints[i] = controlPoints[i] + multipliers[i / 2] * translation;
             controlPoints[i + 1] = 2 * anchorPoints[ i / 2] - controlPoints[i];
         }
     }
