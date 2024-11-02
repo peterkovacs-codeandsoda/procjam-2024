@@ -163,7 +163,7 @@ Camera:
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
-  m_FOVAxisMode: 0
+  m_FOVAxisMode: 1
   m_Iso: 200
   m_ShutterSpeed: 0.005
   m_Aperture: 16
@@ -183,8 +183,8 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
-  orthographic: 1
+  field of view: 123.78827
+  orthographic: 0
   orthographic size: 40
   m_Depth: -1
   m_CullingMask:
@@ -270,7 +270,10 @@ GameObject:
   m_Component:
   - component: {fileID: 860372295}
   - component: {fileID: 860372294}
+  - component: {fileID: 860372297}
   - component: {fileID: 860372296}
+  - component: {fileID: 860372299}
+  - component: {fileID: 860372298}
   m_Layer: 0
   m_Name: PathGenerator
   m_TagString: Untagged
@@ -285,12 +288,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 860372293}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff3558dd2ac5b8b8fbd40d3ae7f4744f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 33
+  seed: 343
   numberOfPoints: 10
   stepSize: 15
   curveResolution: 20
@@ -298,6 +301,10 @@ MonoBehaviour:
   morphingTime: 0.5
   anchorPrefab: {fileID: 3684264824343012946, guid: e80e27dee78522b4cb242e5a9acad0e1, type: 3}
   vehiclePrefab: {fileID: 1294968591045323759, guid: 1a49e6ad4250cca68b7a3dd2622db8d3, type: 3}
+  pathWidth: 0
+  progressionSpeed: 0
+  sidewaysSpeed: 0
+  rotationSpeed: 0
 --- !u!4 &860372295
 Transform:
   m_ObjectHideFlags: 0
@@ -321,7 +328,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 860372293}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -417,6 +424,81 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &860372297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 860372293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 169dd076ef5cded88aa914565cea5b1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  seed: 75756
+  numberOfPoints: 6
+  stepSize: 10
+  curveResolution: 20
+  morphingSpeed: 5
+  morphingTime: 0.4
+  anchorPrefab: {fileID: 3684264824343012946, guid: e80e27dee78522b4cb242e5a9acad0e1, type: 3}
+  sphereRadius: 30
+  perspectiveOffset: 2
+  pathWidth: 4
+  progressionSpeed: 1
+  sidewaysSpeed: 2
+  rotationSpeed: 0.5
+--- !u!23 &860372298
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 860372293}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 7cc30a0b5e4fbb6ecaa3a898d5b56a2d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &860372299
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 860372293}
+  m_Mesh: {fileID: 0}
 --- !u!1001 &1968501399
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -447,11 +529,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2388436640725572674, guid: 1a49e6ad4250cca68b7a3dd2622db8d3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 2388436640725572674, guid: 1a49e6ad4250cca68b7a3dd2622db8d3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2388436640725572674, guid: 1a49e6ad4250cca68b7a3dd2622db8d3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -484,6 +566,10 @@ PrefabInstance:
     - target: {fileID: 2432931413641540230, guid: 1a49e6ad4250cca68b7a3dd2622db8d3, type: 3}
       propertyPath: speed
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2432931413641540230, guid: 1a49e6ad4250cca68b7a3dd2622db8d3, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2432931413641540230, guid: 1a49e6ad4250cca68b7a3dd2622db8d3, type: 3}
       propertyPath: turnSpeed
