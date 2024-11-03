@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
 
 public class ArchedPathGenerator : MonoBehaviour
 {
@@ -52,6 +53,8 @@ public class ArchedPathGenerator : MonoBehaviour
     private float elapsedMorphingTime;
     private float translation;
     private Vector3 cylinderCenter;
+    private bool onPath = true;
+    private bool pause = false;
 
     void Start()
     {
@@ -66,30 +69,43 @@ public class ArchedPathGenerator : MonoBehaviour
 
     void Update()
     {
-        if (!morphing && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
+        if(!pause)
         {
-            translation = -morphingSpeed * Time.deltaTime;
-            morphing = true;
-        }
-        if (!morphing && (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)))
-        {
-            translation = morphingSpeed * Time.deltaTime;
-            morphing = true;
-        }
+            if (!morphing && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
+            {
+                translation = -morphingSpeed * Time.deltaTime;
+                morphing = true;
+            }
+            if (!morphing && (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)))
+            {
+                translation = morphingSpeed * Time.deltaTime;
+                morphing = true;
+            }
 
-        if (morphing && elapsedMorphingTime < morphingTime)
-        {
-            elapsedMorphingTime += Time.deltaTime;
-            TranslateControlPoints();
+            if (morphing && elapsedMorphingTime < morphingTime)
+            {
+                elapsedMorphingTime += Time.deltaTime;
+                TranslateControlPoints();
+            }
+            else if(morphing && elapsedMorphingTime > morphingTime)
+            {
+                elapsedMorphingTime = 0.0f;
+                morphing = false;
+            }
+            ProgressPath();
+            CreateBezierPath();
+            CheckPathPosition();
+
+            if (onPath)
+            {
+            
+            }
+            else
+            {
+                pause = true;
+            }
+            GetComponent<MeshFilter>().sharedMesh = GenerateMesh();
         }
-        else if(morphing && elapsedMorphingTime > morphingTime)
-        {
-            elapsedMorphingTime = 0.0f;
-            morphing = false;
-        }
-        ProgressPath();
-        CreateBezierPath();
-        GetComponent<MeshFilter>().sharedMesh = GenerateMesh();
     }
 
     void GeneratePath()
@@ -208,6 +224,31 @@ public class ArchedPathGenerator : MonoBehaviour
         float y = -cylinderRadius * Mathf.Cos(theta);
 
         return cylinderCenter + new Vector3(pathPoint.x, y, z);
+    }
+
+    void CheckPathPosition()
+    {
+        float margin = 0.3f;
+        Vector3 nextPoint = new Vector3(0.0f, 0.0f, 0.0f);
+        Vector3 previousPoint = new Vector3(0.0f, 0.0f, 0.0f);
+        for (int i = 0; i < archedPathPoints.Count; i++)
+        {
+            Vector3 archedPathPoint = archedPathPoints[i];
+            if (archedPathPoint.z > 0.0f && i > 0)
+            {
+                nextPoint = archedPathPoint;
+                previousPoint = archedPathPoints[i-1];
+                break;
+            }
+            if (i == archedPathPoints.Count - 1 && nextPoint == new Vector3(0.0f, 0.0f, 0.0f))
+            {
+                Debug.Log("You win.");
+            }
+        }
+        float ratio = (0 - previousPoint.z) / (nextPoint.z - previousPoint.z);
+        Vector3 reference = previousPoint + (nextPoint - previousPoint) * ratio;
+
+        onPath = reference.x < pathWidth - margin && reference.x > -pathWidth + margin;
     }
 
     Mesh GenerateMesh()
