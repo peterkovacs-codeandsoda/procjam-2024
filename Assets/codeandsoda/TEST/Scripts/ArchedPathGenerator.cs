@@ -54,7 +54,7 @@ public class ArchedPathGenerator : MonoBehaviour
     private float translation;
     private Vector3 cylinderCenter;
     private bool onPath = true;
-    private bool pause = false;
+    public bool paused = false;
 
     void Start()
     {
@@ -67,9 +67,20 @@ public class ArchedPathGenerator : MonoBehaviour
         GetComponent<MeshFilter>().mesh = GenerateMesh();
     }
 
+    public void StartWithSeed(int seed)
+    {
+        Debug.Log("seed is: " + seed);
+        Random.InitState(seed);
+        GeneratePath();
+        GenerateMultipliers();
+        ProgressPath();
+        CreateBezierPath();
+        GetComponent<MeshFilter>().mesh = GenerateMesh();
+    }
+
     void Update()
     {
-        if(!pause)
+        if(!paused)
         {
             if (!morphing && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
             {
@@ -102,7 +113,7 @@ public class ArchedPathGenerator : MonoBehaviour
             }
             else
             {
-                pause = true;
+                paused = true;
             }
             GetComponent<MeshFilter>().sharedMesh = GenerateMesh();
         }
@@ -141,16 +152,16 @@ public class ArchedPathGenerator : MonoBehaviour
         {
             if(controlPoints[i].y > 0.0f)
             {
-                // Vector2 direction = anchorPoints [i / 2] - controlPoints[i].normalized;
-                //direction = translation * new Vector2(-direction.y, direction.x);
-                // controlPoints[i] = controlPoints[i] + multipliers[i / 2] * direction;
+                Vector2 direction = (anchorPoints [i / 2] - controlPoints[i]).normalized;
+                direction = translation * new Vector2(-direction.y, direction.x);
+                controlPoints[i] = controlPoints[i] + multipliers[i / 2] * direction;
 
-                Vector2 direction = controlPoints[i] - anchorPoints [i / 2];
-                float rotatedX = direction.x * Mathf.Cos(translation) - direction.y * Mathf.Sin(translation);
-                float rotatedY = direction.x * Mathf.Sin(translation) + direction.y * Mathf.Cos(translation);
-                direction = multipliers[i / 2] * new Vector2(rotatedX, rotatedY);
+                //Vector2 direction = controlPoints[i] - anchorPoints [i / 2];
+                //float rotatedX = direction.x * Mathf.Cos(translation) - direction.y * Mathf.Sin(translation);
+                //float rotatedY = direction.x * Mathf.Sin(translation) + direction.y * Mathf.Cos(translation);
+                //direction = multipliers[i / 2] * new Vector2(rotatedX, rotatedY);
+                //controlPoints[i] = anchorPoints [i / 2] + direction;
 
-                controlPoints[i] = anchorPoints [i / 2] + direction;
                 controlPoints[i + 1] = 2 * anchorPoints[ i / 2] - controlPoints[i];
             }
         }
